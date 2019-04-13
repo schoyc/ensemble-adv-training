@@ -102,7 +102,7 @@ def load_cifar_model(weights_path):
 def main(model_name, eat_model_name, adv_model_names, train_ensemble):
     np.random.seed(0)
     assert keras.backend.backend() == "tensorflow"
-    set_cifar_flags()
+    # set_cifar_flags()
 
     flags.DEFINE_bool('NUM_EPOCHS', args.epochs, 'Number of epochs')
 
@@ -141,11 +141,11 @@ def main(model_name, eat_model_name, adv_model_names, train_ensemble):
         adv_models[i] = load_cifar_model(adv_model_names[i])
 
     x = K.placeholder(shape=(None,
-                             FLAGS.IMAGE_ROWS,
-                             FLAGS.IMAGE_COLS,
-                             FLAGS.NUM_CHANNELS))
+                             32,
+                             32,
+                             3))
 
-    y = K.placeholder(shape=(FLAGS.BATCH_SIZE, FLAGS.NUM_CLASSES))
+    y = K.placeholder(shape=(64, 10))
 
     eps = args.eps
 
