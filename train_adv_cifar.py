@@ -104,7 +104,7 @@ def main(model_name, eat_model_name, adv_model_names, train_ensemble):
     assert keras.backend.backend() == "tensorflow"
     # set_cifar_flags()
 
-    flags.DEFINE_bool('NUM_EPOCHS', args.epochs, 'Number of epochs')
+    # flags.DEFINE_bool('NUM_EPOCHS', args.epochs, 'Number of epochs')
 
     # Get MNIST test data
     X_train, Y_train, X_test, Y_test = get_cifar_data()
@@ -162,7 +162,7 @@ def main(model_name, eat_model_name, adv_model_names, train_ensemble):
         x_advs[i] = symbolic_fgs(x, grad, eps=eps)
 
     # Train an MNIST model
-    tf_train(x, y, model, X_train, Y_train, data_gen, x_advs=x_advs)
+    tf_train(x, y, model, X_train, Y_train, data_gen, x_advs=x_advs, epochs=args.epochs)
 
     # Finally print the result!
     test_error = tf_test_error_rate(model, x, X_test, Y_test)

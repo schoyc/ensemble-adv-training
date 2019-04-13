@@ -50,7 +50,7 @@ import os
 
 # Training parameters
 batch_size = 32  # orig paper trained all networks with batch_size=128
-epochs = 200
+epochs = 1
 data_augmentation = True
 num_classes = 10
 
@@ -338,11 +338,11 @@ def resnet_v2(input_shape, depth, num_classes=10):
     return model
 
 def train_resnet(version, n):
-    n = 3
+   # n = 3
 
     # Model version
     # Orig paper: version = 1 (ResNet v1), Improved ResNet: version = 2 (ResNet v2)
-    version = 1
+    # version = 1
 
     # Computed depth from supplied model parameter n
     if version == 1:
@@ -362,6 +362,7 @@ def train_resnet(version, n):
                   optimizer=Adam(lr=lr_schedule(0)),
                   metrics=['accuracy'])
     model.summary()
+    print("Version:", version, "n:", n)
     print(model_type)
 
     # Prepare model model saving directory.
@@ -436,7 +437,7 @@ def train_resnet(version, n):
             # set function that will be applied on each input
             preprocessing_function=None,
             # image data format, either "channels_first" or "channels_last"
-            data_format=None,
+            data_format="channels_last",
             # fraction of images reserved for validation (strictly between 0 and 1)
             validation_split=0.0)
 
@@ -448,6 +449,7 @@ def train_resnet(version, n):
         model.fit_generator(datagen.flow(x_train, y_train, batch_size=batch_size),
                             validation_data=(x_test, y_test),
                             epochs=epochs, verbose=1, workers=4,
+                            steps_per_epoch=x_train.shape[0]//batch_size,
                             callbacks=callbacks)
 
     # Score trained model.
