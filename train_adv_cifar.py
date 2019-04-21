@@ -1,5 +1,8 @@
 import keras
 from keras import backend as K
+
+import tensorflow as tf
+
 from tensorflow.python.platform import flags
 from keras.models import save_model, load_model
 
@@ -140,12 +143,12 @@ def main(model_name, eat_model_name, adv_model_names, train_ensemble):
     for i in range(len(adv_model_names)):
         adv_models[i] = load_cifar_model(adv_model_names[i])
 
-    x = K.placeholder(shape=(None,
+    x = tf.placeholder(tf.float32, shape=(None,
                              32,
                              32,
                              3))
 
-    y = K.placeholder(shape=(64, 10))
+    y = tf.placeholder(tf.float32, shape=(None, 10))
 
     eps = args.eps
 

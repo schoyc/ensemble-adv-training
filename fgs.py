@@ -1,6 +1,7 @@
 
 import keras.backend as K
 from attack_utils import gen_grad
+import tensorflow as tf
 
 
 def symbolic_fgs(x, grad, eps=0.3, clipping=True):
@@ -9,16 +10,16 @@ def symbolic_fgs(x, grad, eps=0.3, clipping=True):
     """
 
     # signed gradient
-    normed_grad = K.sign(grad)
+    normed_grad = tf.sign(grad)
 
     # Multiply by constant epsilon
     scaled_grad = eps * normed_grad
 
     # Add perturbation to original example to obtain adversarial example
-    adv_x = K.stop_gradient(x + scaled_grad)
+    adv_x = tf.stop_gradient(x + scaled_grad)
 
     if clipping:
-        adv_x = K.clip(adv_x, 0, 1)
+        adv_x = tf.clip_by_value(adv_x, 0, 1)
     return adv_x
 
 

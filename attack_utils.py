@@ -4,6 +4,8 @@ import keras.backend as K
 from tensorflow.python.platform import flags
 FLAGS = flags.FLAGS
 
+import tensorflow as tf
+
 
 def linf_loss(X1, X2):
     return np.max(np.abs(X1 - X2), axis=(1, 2, 3))
@@ -17,18 +19,18 @@ def gen_adv_loss(logits, y, loss='logloss', mean=False):
     if loss == 'training':
         # use the model's output instead of the true labels to avoid
         # label leaking at training time
-        y = K.cast(K.equal(logits, K.max(logits, 1, keepdims=True)), "float32")
-        y = y / K.sum(y, 1, keepdims=True)
-        out = K.categorical_crossentropy(logits, y, from_logits=True)
+        y = tf.cast(tf.equal(logits, tf.max(logits, 1, keepdims=True)), tf.float32)
+        y = y / tf.sum(y, 1, keepdims=True)
+        out = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y)
     elif loss == 'logloss':
-        out = K.categorical_crossentropy(logits, y, from_logits=True)
+        out = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y)
     else:
         raise ValueError("Unknown loss: {}".format(loss))
 
     if mean:
-        out = K.mean(out)
+        out = tf.mean(out)
     else:
-        out = K.sum(out)
+        out = tf.sum(out)
     return out
 
 
@@ -40,5 +42,5 @@ def gen_grad(x, logits, y, loss='logloss'):
     adv_loss = gen_adv_loss(logits, y, loss)
 
     # Define gradient of loss wrt input
-    grad = K.gradients(adv_loss, [x])[0]
+    grad = tf.gradients(adv_loss, [x])[0]
     return grad

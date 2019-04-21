@@ -62,7 +62,7 @@ def tf_train(x, y, model, X_train, Y_train, generator, x_advs=None, epochs=12):
 
     # Generate cross-entropy loss for training
     logits = model(x)
-    preds = K.softmax(logits)
+    preds = tf.softmax(logits)
     l1 = gen_adv_loss(logits, y, mean=True)
 
     # add adversarial training loss
@@ -134,7 +134,7 @@ def tf_test_error_rate(model, x, X_test, y_test):
     assert len(X_test) == len(y_test)
 
     # Predictions for the test set
-    eval_prediction = K.softmax(model(x))
+    eval_prediction = tf.softmax(model(x))
 
     predictions = batch_eval([x], [eval_prediction], [X_test])[0]
 
